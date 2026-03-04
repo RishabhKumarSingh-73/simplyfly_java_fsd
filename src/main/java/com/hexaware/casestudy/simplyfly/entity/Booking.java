@@ -1,22 +1,41 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
+@Entity
 public class Booking {
 	
 	
 	private int id;
-	private int userId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id",nullable = false)
+	private User user;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id",nullable = false)
+	private FlightSchedule flightSchedule;
+	
 	private String status;
 	private double totalAmount;
+	
+	@OneToMany(mappedBy = "booking",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	private List<BookingSeat> bookedSeats;
 	
 	public Booking() {
 		super();
 	}
 
-	public Booking(int id, int userId, String status, double totalAmount) {
+	public Booking(int id, String status, double totalAmount) {
 		super();
 		this.id = id;
-		this.userId = userId;
 		this.status = status;
 		this.totalAmount = totalAmount;
 	}
@@ -29,12 +48,30 @@ public class Booking {
 		this.id = id;
 	}
 
-	public int getUserId() {
-		return userId;
+	
+
+	public List<BookingSeat> getBookedSeats() {
+		return bookedSeats;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setBookedSeats(List<BookingSeat> bookedSeats) {
+		this.bookedSeats = bookedSeats;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public FlightSchedule getFlightSchedule() {
+		return flightSchedule;
+	}
+
+	public void setFlightSchedule(FlightSchedule flightSchedule) {
+		this.flightSchedule = flightSchedule;
 	}
 
 	public String getStatus() {

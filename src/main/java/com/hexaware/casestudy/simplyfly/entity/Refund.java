@@ -2,10 +2,20 @@ package com.hexaware.casestudy.simplyfly.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class Refund {
 	
 	private int id;
-	private int paymentId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "payment_id",nullable = false)
+	private Payment payment;
+	
 	private double amount;
 	private String status;
 	private LocalDateTime refundedAt;
@@ -14,10 +24,9 @@ public class Refund {
 		super();
 	}
 
-	public Refund(int id, int paymentId, double amount, String status, LocalDateTime refundedAt) {
+	public Refund(int id, double amount, String status, LocalDateTime refundedAt) {
 		super();
 		this.id = id;
-		this.paymentId = paymentId;
 		this.amount = amount;
 		this.status = status;
 		this.refundedAt = refundedAt;
@@ -31,12 +40,14 @@ public class Refund {
 		this.id = id;
 	}
 
-	public int getPaymentId() {
-		return paymentId;
+	
+
+	public Payment getPayment() {
+		return payment;
 	}
 
-	public void setPaymentId(int paymentId) {
-		this.paymentId = paymentId;
+	public void setPayment(Payment payment) {
+		this.payment = payment;
 	}
 
 	public double getAmount() {

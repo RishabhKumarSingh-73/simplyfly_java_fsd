@@ -1,26 +1,50 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class Flight {
 	
 	private int id;
 	private String flightNumber;
-	private int ownerid;
-	private int aircraftModelId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "owner_id",nullable = false)
+	private User owner;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "aircraft_model_id", nullable = false)
+	private AircraftModel aircraftModel;
+	
 	private boolean isActive;
+	
+
 	
 	public Flight() {
 		super();
 	}
 
-	public Flight(int id, String flightNumber, int ownerid, int aircraftModelId, boolean isActive) {
+	public Flight(int id, String flightNumber, boolean isActive) {
 		super();
 		this.id = id;
 		this.flightNumber = flightNumber;
-		this.ownerid = ownerid;
-		this.aircraftModelId = aircraftModelId;
 		this.isActive = isActive;
 	}
 	
+	
+
+	public AircraftModel getAircraftModel() {
+		return aircraftModel;
+	}
+
+	public void setAircraftModel(AircraftModel aircraftModel) {
+		this.aircraftModel = aircraftModel;
+	}
+
 	
 
 	public int getId() {
@@ -39,20 +63,22 @@ public class Flight {
 		this.flightNumber = flightNumber;
 	}
 
-	public int getOwnerid() {
-		return ownerid;
+	
+
+	public User getOwner() {
+		return owner;
 	}
 
-	public void setOwnerid(int ownerid) {
-		this.ownerid = ownerid;
+	public void setOwner(User owner) {
+		this.owner = owner;
 	}
 
-	public int getAircraftModelId() {
-		return aircraftModelId;
+	public AircraftModel getAircraftModelId() {
+		return aircraftModel;
 	}
 
-	public void setAircraftModelId(int aircraftModelId) {
-		this.aircraftModelId = aircraftModelId;
+	public void setAircraftModelId(AircraftModel aircraftModel) {
+		this.aircraftModel = aircraftModel;
 	}
 
 	public boolean isActive() {

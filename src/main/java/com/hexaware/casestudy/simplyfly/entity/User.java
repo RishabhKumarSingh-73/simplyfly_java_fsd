@@ -1,5 +1,8 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class User {
 	
 	private int id;
@@ -9,9 +12,17 @@ public class User {
 	private String role;
 	private boolean isActive;
 	
+	
+	
 	public int getId() {
 		return id;
 	}
+	
+	
+	
+	
+
+
 
 	public void setId(int id) {
 		this.id = id;

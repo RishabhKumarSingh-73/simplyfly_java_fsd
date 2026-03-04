@@ -1,19 +1,28 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class FlightSchedulePrice {
 	
 	private int id;
-	private int flightScheduleId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "flight_schedule_id",nullable = false)
+	private FlightSchedule flightSchedule;
+	
 	private String seatClass;
 	private double basePrice;
 	public FlightSchedulePrice() {
 		super();
 	}
-	public FlightSchedulePrice(int id, int flightScheduleId, String seatClass, double basePrice) {
+	public FlightSchedulePrice(int id,String seatClass, double basePrice) {
 		super();
 		this.id = id;
-		this.flightScheduleId = flightScheduleId;
 		this.seatClass = seatClass;
 		this.basePrice = basePrice;
 	}
@@ -23,11 +32,12 @@ public class FlightSchedulePrice {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public int getFlightScheduleId() {
-		return flightScheduleId;
+	
+	public FlightSchedule getFlightSchedule() {
+		return flightSchedule;
 	}
-	public void setFlightScheduleId(int flightScheduleId) {
-		this.flightScheduleId = flightScheduleId;
+	public void setFlightSchedule(FlightSchedule flightSchedule) {
+		this.flightSchedule = flightSchedule;
 	}
 	public String getSeatClass() {
 		return seatClass;

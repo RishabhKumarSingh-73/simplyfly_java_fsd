@@ -1,5 +1,8 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Route {
 	
 	private int id;
@@ -7,6 +10,8 @@ public class Route {
 	private String destinationAirportCode;
 	private String sourceCity;
 	private String destinationCity;
+	
+	
 	
 	public Route() {
 		super();
@@ -21,6 +26,10 @@ public class Route {
 		this.sourceCity = sourceCity;
 		this.destinationCity = destinationCity;
 	}
+	
+	
+	
+	
 
 	public int getId() {
 		return id;

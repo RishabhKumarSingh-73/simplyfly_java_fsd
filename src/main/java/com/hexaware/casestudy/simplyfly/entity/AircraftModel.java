@@ -1,5 +1,13 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+
+@Entity
 public class AircraftModel {
 	
 	 private int id;
@@ -7,6 +15,10 @@ public class AircraftModel {
 	 private String manufacturer;
 	 private int totalRows;
 	 private String layoutDescription;
+	 
+	 @OneToMany(mappedBy = "aircraftModel",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	 private List<Seat> seats;
+	 
 	 public int getId() {
 		 return id;
 	 }

@@ -1,10 +1,19 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
+@Entity
 public class Seat {
 	
 	private int id;
-	private int aircraft_model_id;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "aircraft_model_id",nullable = false)
+	private AircraftModel aircraftModel;
+	
 	private int rowNumber;
 	private char columnLetter;
 	private String seatClass;
@@ -14,11 +23,10 @@ public class Seat {
 		super();
 	}
 
-	public Seat(int id, int aircraft_model_id, int rowNumber, char columnLetter, String seatClass,
+	public Seat(int id, int rowNumber, char columnLetter, String seatClass,
 			String positionType) {
 		super();
 		this.id = id;
-		this.aircraft_model_id = aircraft_model_id;
 		this.rowNumber = rowNumber;
 		this.columnLetter = columnLetter;
 		this.seatClass = seatClass;
@@ -33,12 +41,14 @@ public class Seat {
 		this.id = id;
 	}
 
-	public int getAircraft_model_id() {
-		return aircraft_model_id;
+	
+
+	public AircraftModel getAircraftModel() {
+		return aircraftModel;
 	}
 
-	public void setAircraft_model_id(int aircraft_model_id) {
-		this.aircraft_model_id = aircraft_model_id;
+	public void setAircraftModel(AircraftModel aircraftModel) {
+		this.aircraftModel = aircraftModel;
 	}
 
 	public int getRowNumber() {

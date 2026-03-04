@@ -2,10 +2,20 @@ package com.hexaware.casestudy.simplyfly.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class Payment {
 	
 	  private int id;
-	  private int bookingId;
+	  
+	  @ManyToOne(fetch = FetchType.LAZY)
+	  @JoinColumn(name = "booking_id",nullable = false)
+	  private Booking booking;
+	  
 	  private String paymentGatewayRef;
 	  private String mode;
 	  private String status;
@@ -16,11 +26,10 @@ public class Payment {
 		super();
 	  }
 
-	  public Payment(int id, int bookingId, String paymentGatewayRef, String mode, String status, double amount,
+	  public Payment(int id, String paymentGatewayRef, String mode, String status, double amount,
 			LocalDateTime paidAt) {
 		super();
 		this.id = id;
-		this.bookingId = bookingId;
 		this.paymentGatewayRef = paymentGatewayRef;
 		this.mode = mode;
 		this.status = status;
@@ -36,12 +45,14 @@ public class Payment {
 		  this.id = id;
 	  }
 
-	  public int getBookingId() {
-		  return bookingId;
-	  }
+	  
 
-	  public void setBookingId(int bookingId) {
-		  this.bookingId = bookingId;
+	  public Booking getBooking() {
+		return booking;
+	}
+
+	  public void setBooking(Booking booking) {
+		  this.booking = booking;
 	  }
 
 	  public String getPaymentGatewayRef() {

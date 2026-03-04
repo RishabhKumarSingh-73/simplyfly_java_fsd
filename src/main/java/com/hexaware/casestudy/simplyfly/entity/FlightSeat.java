@@ -1,22 +1,32 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
+@Entity
 public class FlightSeat {
 	
 	private int id;
-	private int flightScheduleId;
-	private int seatId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "flight_schedule_id",nullable = false)
+	private FlightSchedule flightSchedule;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "seat_id",nullable = false)
+	private Seat seat;
+	
 	private String status;
 	
 	public FlightSeat() {
 		super();
 	}
 
-	public FlightSeat(int id, int flightScheduleId, int seatId, String status) {
+	public FlightSeat(int id, String status) {
 		super();
 		this.id = id;
-		this.flightScheduleId = flightScheduleId;
-		this.seatId = seatId;
 		this.status = status;
 	}
 
@@ -28,20 +38,22 @@ public class FlightSeat {
 		this.id = id;
 	}
 
-	public int getFlightScheduleId() {
-		return flightScheduleId;
+	
+
+	public FlightSchedule getFlightSchedule() {
+		return flightSchedule;
 	}
 
-	public void setFlightScheduleId(int flightScheduleId) {
-		this.flightScheduleId = flightScheduleId;
+	public void setFlightSchedule(FlightSchedule flightSchedule) {
+		this.flightSchedule = flightSchedule;
 	}
 
-	public int getSeatId() {
-		return seatId;
+	public Seat getSeat() {
+		return seat;
 	}
 
-	public void setSeatId(int seatId) {
-		this.seatId = seatId;
+	public void setSeat(Seat seat) {
+		this.seat = seat;
 	}
 
 	public String getStatus() {
