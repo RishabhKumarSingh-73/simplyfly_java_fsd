@@ -2,44 +2,65 @@ package com.hexaware.casestudy.simplyfly.service;
 
 import java.util.List;
 
-import com.hexaware.casestudy.simplyfly.entity.AircraftModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.hexaware.casestudy.simplyfly.entity.AircraftModel;
+import com.hexaware.casestudy.simplyfly.exception.AircraftModelNotFoundException;
+import com.hexaware.casestudy.simplyfly.repository.AircraftModelRepository;
+
+@Service
 public class AircraftModelServiceImp implements IAircraftModelService {
+	
+	@Autowired
+	private AircraftModelRepository repository;
 
 	@Override
 	public List<AircraftModel> getAllAircraftModels() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return repository.findAll();
+		
 	}
 
 	@Override
-	public AircraftModel getAircraftModelById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public AircraftModel getAircraftModelById(int id) throws AircraftModelNotFoundException{
+		
+		return repository.findById(id).orElseThrow(()->new AircraftModelNotFoundException("Aircraft Model not found"));
+		
 	}
 
 	@Override
-	public AircraftModel getAircraftModelByName(String modelName) {
-		// TODO Auto-generated method stub
-		return null;
+	public AircraftModel getAircraftModelByName(String modelName) throws AircraftModelNotFoundException{
+		
+		return repository.findByModelName(modelName).orElseThrow(()->new AircraftModelNotFoundException("Aircraft Model not found"));
+		
 	}
 
 	@Override
-	public int addAircraftModel(AircraftModel aircraftModel) {
-		// TODO Auto-generated method stub
-		return 0;
+	public AircraftModel addAircraftModel(AircraftModel aircraftModel) {
+		
+		return repository.save(aircraftModel);
+		
 	}
 
 	@Override
-	public int updateAircraftModel(AircraftModel aircraftModel) {
-		// TODO Auto-generated method stub
-		return 0;
+	public AircraftModel updateAircraftModel(AircraftModel aircraftModel) throws AircraftModelNotFoundException{
+		
+		repository.findById(aircraftModel.getId()).orElseThrow(()->new AircraftModelNotFoundException("Aircraft Model not found"));
+		
+		return repository.save(aircraftModel);
+		
 	}
 
 	@Override
-	public int deleteAircraftModelById(int id) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String deleteAircraftModelById(int id) throws AircraftModelNotFoundException{
+		
+		AircraftModel aircraftModel = repository.findById(id).orElseThrow(()->new AircraftModelNotFoundException("Aircraft Model not found"));
+		
+		repository.delete(aircraftModel);
+		
+		return "record deleted successfully";
+		
 	}
 
 }

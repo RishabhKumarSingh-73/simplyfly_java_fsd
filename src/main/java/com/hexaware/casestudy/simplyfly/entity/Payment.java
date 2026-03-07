@@ -2,14 +2,24 @@ package com.hexaware.casestudy.simplyfly.entity;
 
 import java.time.LocalDateTime;
 
+import com.hexaware.casestudy.simplyfly.enums.PaymentMode;
+import com.hexaware.casestudy.simplyfly.enums.PaymentStatus;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Payment {
 	
+	  @Id
+	  @GeneratedValue(strategy = GenerationType.IDENTITY)
 	  private int id;
 	  
 	  @ManyToOne(fetch = FetchType.LAZY)
@@ -17,8 +27,13 @@ public class Payment {
 	  private Booking booking;
 	  
 	  private String paymentGatewayRef;
-	  private String mode;
-	  private String status;
+	  
+	  @Enumerated(EnumType.STRING)
+	  private PaymentMode mode;
+	  
+	  @Enumerated(EnumType.STRING)
+	  private PaymentStatus status;
+	  
 	  private double amount;
 	  private LocalDateTime paidAt;
 	  
@@ -26,7 +41,7 @@ public class Payment {
 		super();
 	  }
 
-	  public Payment(int id, String paymentGatewayRef, String mode, String status, double amount,
+	  public Payment(int id, String paymentGatewayRef, PaymentMode mode, PaymentStatus status, double amount,
 			LocalDateTime paidAt) {
 		super();
 		this.id = id;
@@ -63,19 +78,19 @@ public class Payment {
 		  this.paymentGatewayRef = paymentGatewayRef;
 	  }
 
-	  public String getMode() {
+	  public PaymentMode getMode() {
 		  return mode;
 	  }
 
-	  public void setMode(String mode) {
+	  public void setMode(PaymentMode mode) {
 		  this.mode = mode;
 	  }
 
-	  public String getStatus() {
+	  public PaymentStatus getStatus() {
 		  return status;
 	  }
 
-	  public void setStatus(String status) {
+	  public void setStatus(PaymentStatus status) {
 		  this.status = status;
 	  }
 

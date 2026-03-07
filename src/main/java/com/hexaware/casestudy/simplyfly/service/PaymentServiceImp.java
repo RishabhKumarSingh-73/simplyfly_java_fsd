@@ -2,32 +2,50 @@ package com.hexaware.casestudy.simplyfly.service;
 
 import java.util.List;
 
-import com.hexaware.casestudy.simplyfly.entity.Payment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.hexaware.casestudy.simplyfly.entity.Payment;
+import com.hexaware.casestudy.simplyfly.enums.PaymentStatus;
+import com.hexaware.casestudy.simplyfly.exception.PaymentNotFoundException;
+import com.hexaware.casestudy.simplyfly.repository.PaymentRepository;
+
+@Service
 public class PaymentServiceImp implements IPaymentService {
+	
+	@Autowired
+	private PaymentRepository repository;
 
 	@Override
 	public List<Payment> getPaymentsByBookingId(int bookingId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return repository.findByBooking_Id(bookingId);
+		
 	}
 
 	@Override
-	public Payment getPaymentById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Payment getPaymentById(int id) throws PaymentNotFoundException{
+		
+		return repository.findById(id).orElseThrow(()->new PaymentNotFoundException("payment not found exception"));
+		
 	}
 
 	@Override
-	public int addPayment(Payment payment) {
-		// TODO Auto-generated method stub
-		return 0;
+	public Payment addPayment(Payment payment) {
+		
+		return repository.save(payment);
+		
 	}
 
 	@Override
-	public int updatePaymentStatus(int paymentId, String status) {
-		// TODO Auto-generated method stub
-		return 0;
+	public Payment updatePaymentStatus(int paymentId, PaymentStatus status) throws PaymentNotFoundException{
+		
+		Payment payment = repository.findById(paymentId).orElseThrow(()->new PaymentNotFoundException("payment not found exception"));
+		
+		payment.setStatus(status);
+		
+		return repository.save(payment);
+		
 	}
 
 }

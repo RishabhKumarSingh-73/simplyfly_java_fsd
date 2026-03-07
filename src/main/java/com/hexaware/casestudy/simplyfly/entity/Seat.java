@@ -1,13 +1,23 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
+import com.hexaware.casestudy.simplyfly.enums.SeatClass;
+import com.hexaware.casestudy.simplyfly.enums.SeatPosition;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Seat {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -16,15 +26,19 @@ public class Seat {
 	
 	private int rowNumber;
 	private char columnLetter;
-	private String seatClass;
-	private String positionType;
+	
+	@Enumerated(EnumType.STRING)
+	private SeatClass seatClass;
+	
+	@Enumerated(EnumType.STRING)
+	private SeatPosition positionType;
 	
 	public Seat() {
 		super();
 	}
 
-	public Seat(int id, int rowNumber, char columnLetter, String seatClass,
-			String positionType) {
+	public Seat(int id, int rowNumber, char columnLetter, SeatClass seatClass,
+			SeatPosition positionType) {
 		super();
 		this.id = id;
 		this.rowNumber = rowNumber;
@@ -67,19 +81,19 @@ public class Seat {
 		this.columnLetter = columnLetter;
 	}
 
-	public String getSeatClass() {
+	public SeatClass getSeatClass() {
 		return seatClass;
 	}
 
-	public void setSeatClass(String seatClass) {
+	public void setSeatClass(SeatClass seatClass) {
 		this.seatClass = seatClass;
 	}
 
-	public String getPositionType() {
+	public SeatPosition getPositionType() {
 		return positionType;
 	}
 
-	public void setPositionType(String positionType) {
+	public void setPositionType(SeatPosition positionType) {
 		this.positionType = positionType;
 	}
 	

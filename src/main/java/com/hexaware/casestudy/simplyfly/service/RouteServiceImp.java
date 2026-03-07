@@ -3,43 +3,59 @@ package com.hexaware.casestudy.simplyfly.service;
 import java.util.List;
 
 import com.hexaware.casestudy.simplyfly.entity.Route;
+import com.hexaware.casestudy.simplyfly.exception.RouteNotFoundException;
+import com.hexaware.casestudy.simplyfly.repository.RouteRepository;
 
 public class RouteServiceImp implements IRouteService {
+	
+	private RouteRepository repository;
 
 	@Override
 	public List<Route> getAllRoutes() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return repository.findAll();
+	
 	}
 
 	@Override
-	public Route getRouteById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Route getRouteById(int id) throws RouteNotFoundException{
+		
+		return repository.findById(id).orElseThrow(()-> new RouteNotFoundException("Route record not found."));
+		
 	}
 
 	@Override
-	public Route getRouteBySourceAndDestination(String sourceAirportCode, String destinationAirportCode) {
-		// TODO Auto-generated method stub
-		return null;
+	public Route getRouteBySourceAndDestination(String sourceAirportCode, String destinationAirportCode) throws RouteNotFoundException{
+
+		return repository.findBySourceAirportCodeAndDestinationAirportCode(sourceAirportCode, destinationAirportCode).orElseThrow(()-> new RouteNotFoundException("Route record not found."));
+		
 	}
 
 	@Override
-	public int addRoute(Route route) {
-		// TODO Auto-generated method stub
-		return 0;
+	public Route addRoute(Route route) {
+
+		return repository.save(route);
+		
 	}
 
 	@Override
-	public int updateRoute(Route route) {
-		// TODO Auto-generated method stub
-		return 0;
+	public Route updateRoute(Route route) throws RouteNotFoundException{
+
+		repository.findById(route.getId()).orElseThrow(()-> new RouteNotFoundException("Route record not found."));
+		
+		return repository.save(route);
+		
 	}
 
 	@Override
-	public int deleteRouteById(int id) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String deleteRouteById(int id) throws RouteNotFoundException{
+
+		Route route = repository.findById(id).orElseThrow(()-> new RouteNotFoundException("Route record not found."));
+		
+		repository.delete(route);
+		
+		return "record deleted successfully.";
+		
 	}
 
 }

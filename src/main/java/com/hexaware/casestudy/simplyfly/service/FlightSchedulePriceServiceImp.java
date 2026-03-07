@@ -2,38 +2,59 @@ package com.hexaware.casestudy.simplyfly.service;
 
 import java.util.List;
 
-import com.hexaware.casestudy.simplyfly.entity.FlightSchedulePrice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.hexaware.casestudy.simplyfly.entity.FlightSchedulePrice;
+import com.hexaware.casestudy.simplyfly.enums.SeatClass;
+import com.hexaware.casestudy.simplyfly.exception.FlightSchedulePriceNotFoundException;
+import com.hexaware.casestudy.simplyfly.repository.FlightSchedulePriceRepository;
+
+@Service
 public class FlightSchedulePriceServiceImp implements IFlightSchedulePriceService {
+	
+	@Autowired
+	private FlightSchedulePriceRepository repository;
 
 	@Override
 	public List<FlightSchedulePrice> getPricesByScheduleId(int flightScheduleId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return repository.findByFlightSchedule_Id(flightScheduleId);
+		
 	}
 
 	@Override
-	public FlightSchedulePrice getPriceByScheduleAndClass(int flightScheduleId, String seatClass) {
-		// TODO Auto-generated method stub
-		return null;
+	public FlightSchedulePrice getPriceByScheduleAndClass(int flightScheduleId, SeatClass seatClass) throws FlightSchedulePriceNotFoundException{
+
+		return repository.findByFlightSchedule_IdAndSeatClass(flightScheduleId, seatClass).orElseThrow(()-> new FlightSchedulePriceNotFoundException("flight schedule price record not found"));
+	
 	}
 
 	@Override
-	public int addPrice(FlightSchedulePrice price) {
-		// TODO Auto-generated method stub
-		return 0;
+	public FlightSchedulePrice addPrice(FlightSchedulePrice price) {
+
+		return repository.save(price);
+		
 	}
 
 	@Override
-	public int updatePrice(FlightSchedulePrice price) {
-		// TODO Auto-generated method stub
-		return 0;
+	public FlightSchedulePrice updatePrice(FlightSchedulePrice price) throws FlightSchedulePriceNotFoundException{
+		
+		repository.findById(price.getId()).orElseThrow(()-> new FlightSchedulePriceNotFoundException("flight schedule price record not found"));
+		
+		return repository.save(price);
+		
 	}
 
 	@Override
-	public int deletePriceById(int id) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String deletePriceById(int id) throws FlightSchedulePriceNotFoundException{
+		
+		FlightSchedulePrice price = repository.findById(id).orElseThrow(()-> new FlightSchedulePriceNotFoundException("flight schedule price record not found"));
+		
+		repository.delete(price);
+		
+		return "flight schedule price deleted successfully";
+		
 	}
 
 }

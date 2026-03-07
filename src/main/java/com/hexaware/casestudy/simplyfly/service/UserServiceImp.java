@@ -2,44 +2,71 @@ package com.hexaware.casestudy.simplyfly.service;
 
 import java.util.List;
 
-import com.hexaware.casestudy.simplyfly.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.hexaware.casestudy.simplyfly.entity.User;
+import com.hexaware.casestudy.simplyfly.exception.UserNotFoundException;
+import com.hexaware.casestudy.simplyfly.repository.UserRepository;
+
+@Service
 public class UserServiceImp implements IUserService {
+	
+	@Autowired
+	private UserRepository repository;
 
 	@Override
 	public List<User> getAllUsers() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return repository.findAll();
+		
 	}
 
 	@Override
-	public User getUserByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
+	public User getUserByEmail(String email) throws UserNotFoundException{
+		
+		User user = repository.findByEmail(email).orElseThrow(()->new UserNotFoundException("user record not found"));
+		
+		return user;
+		
 	}
 
 	@Override
-	public int addUser(User user) {
-		// TODO Auto-generated method stub
-		return 0;
+	public User addUser(User user) {
+
+		return repository.save(user);
+	
 	}
 
 	@Override
-	public int updateUser(User user) {
-		// TODO Auto-generated method stub
-		return 0;
+	public User updateUser(User user) throws UserNotFoundException{
+
+		repository.findById(user.getId()).orElseThrow(()-> new UserNotFoundException("user record not found"));
+		
+		return repository.save(user);
+		
 	}
 
 	@Override
-	public int deleteUserByEmail(String email) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String deleteUserByEmail(String email) throws UserNotFoundException{
+
+		User user = repository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("user record not found"));
+		
+		repository.delete(user);
+		
+		return "user record deleted successfully";
+	
 	}
 
 	@Override
-	public int deleteUserById(int id) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String deleteUserById(int id) throws UserNotFoundException{
+
+		User user = repository.findById(id).orElseThrow(()-> new UserNotFoundException("user record not found"));
+		
+		repository.delete(user);
+		
+		return "user record deleted successfully";
+	
 	}
 
 }

@@ -3,43 +3,62 @@ package com.hexaware.casestudy.simplyfly.service;
 import java.util.List;
 
 import com.hexaware.casestudy.simplyfly.entity.Booking;
+import com.hexaware.casestudy.simplyfly.enums.BookingStatus;
+import com.hexaware.casestudy.simplyfly.exception.BookingNotFoundException;
+import com.hexaware.casestudy.simplyfly.repository.BookingRepository;
 
 public class BookingServiceImp implements IBookingService {
+	
+	private BookingRepository repository;
 
 	@Override
 	public List<Booking> getAllBookings() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return repository.findAll();
+	
 	}
 
 	@Override
-	public Booking getBookingById(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Booking getBookingById(int id) throws BookingNotFoundException{
+		
+		return repository.findById(id).orElseThrow(()->new BookingNotFoundException("Booking not found"));
+	
 	}
 
 	@Override
 	public List<Booking> getBookingsByUserId(int userId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return repository.findByUser_Id(userId);
+		
 	}
 
 	@Override
-	public int addBooking(Booking booking) {
-		// TODO Auto-generated method stub
-		return 0;
+	public Booking addBooking(Booking booking) {
+		
+		return repository.save(booking);
+		
 	}
 
 	@Override
-	public int updateBookingStatus(int bookingId, String status) {
-		// TODO Auto-generated method stub
-		return 0;
+	public Booking updateBookingStatus(int bookingId, BookingStatus status) throws BookingNotFoundException{
+		
+		Booking booking = repository.findById(bookingId).orElseThrow(()->new BookingNotFoundException("Booking not found"));
+		
+		booking.setStatus(status);
+		
+		return repository.save(booking);
+		
 	}
 
 	@Override
-	public int cancelBooking(int bookingId) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String cancelBooking(int bookingId) throws BookingNotFoundException{
+		
+		Booking booking = repository.findById(bookingId).orElseThrow(()->new BookingNotFoundException("Booking not found"));
+		
+		booking.setStatus(BookingStatus.CANCELLED);
+		
+		return "Booking cancelled";
+		
 	}
 
 }

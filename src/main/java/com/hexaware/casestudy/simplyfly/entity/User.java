@@ -1,15 +1,28 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
+import com.hexaware.casestudy.simplyfly.enums.Role;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class User {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	
 	private String username;
 	private String email;
 	private String passwordHash;
-	private String role;
+	
+	@Enumerated(EnumType.STRING)
+	private Role role;
+	
 	private boolean isActive;
 	
 	
@@ -52,11 +65,11 @@ public class User {
 		this.passwordHash = passwordHash;
 	}
 
-	public String getRole() {
+	public Role getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
 
@@ -72,7 +85,7 @@ public class User {
 		super();
 	}
 
-	public User(int id, String username, String email, String passwordHash, String role, boolean isActive) {
+	public User(int id, String username, String email, String passwordHash, Role role, boolean isActive) {
 		super();
 		this.id = id;
 		this.username = username;
