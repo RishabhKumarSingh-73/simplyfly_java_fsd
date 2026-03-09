@@ -10,7 +10,10 @@ import com.hexaware.casestudy.simplyfly.enums.FlightSeatStatus;
 import com.hexaware.casestudy.simplyfly.exception.FlightSeatNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.FlightSeatRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class FlightSeatServiceImp implements IFlightSeatService {
 	
 	@Autowired
@@ -26,7 +29,7 @@ public class FlightSeatServiceImp implements IFlightSeatService {
 	@Override
 	public List<FlightSeat> getAvailableSeatsByScheduleId(int flightScheduleId) {
 		
-		return repository.findByfindByFlightSchedule_IdAndStatus(flightScheduleId, FlightSeatStatus.AVAILABLE);
+		return repository.findByFlightSchedule_IdAndStatus(flightScheduleId, FlightSeatStatus.AVAILABLE);
 		
 	}
 

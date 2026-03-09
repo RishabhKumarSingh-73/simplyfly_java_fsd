@@ -9,7 +9,10 @@ import com.hexaware.casestudy.simplyfly.entity.Flight;
 import com.hexaware.casestudy.simplyfly.exception.FlightNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.FlightRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class FlightServiceImp implements IFlightService {
 	
 	@Autowired

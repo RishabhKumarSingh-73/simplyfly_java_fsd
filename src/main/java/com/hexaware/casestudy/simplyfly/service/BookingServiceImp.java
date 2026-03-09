@@ -2,11 +2,17 @@ package com.hexaware.casestudy.simplyfly.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.hexaware.casestudy.simplyfly.entity.Booking;
 import com.hexaware.casestudy.simplyfly.enums.BookingStatus;
 import com.hexaware.casestudy.simplyfly.exception.BookingNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.BookingRepository;
 
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
 public class BookingServiceImp implements IBookingService {
 	
 	private BookingRepository repository;

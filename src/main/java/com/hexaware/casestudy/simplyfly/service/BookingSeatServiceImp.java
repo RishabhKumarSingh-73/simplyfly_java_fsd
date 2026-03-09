@@ -9,7 +9,10 @@ import com.hexaware.casestudy.simplyfly.entity.BookingSeat;
 import com.hexaware.casestudy.simplyfly.exception.BookingSeatNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.BookingSeatRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class BookingSeatServiceImp implements IBookingSeatService {
 	
 	@Autowired

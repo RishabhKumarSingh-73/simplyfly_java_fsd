@@ -9,7 +9,10 @@ import com.hexaware.casestudy.simplyfly.entity.AircraftModel;
 import com.hexaware.casestudy.simplyfly.exception.AircraftModelNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.AircraftModelRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class AircraftModelServiceImp implements IAircraftModelService {
 	
 	@Autowired

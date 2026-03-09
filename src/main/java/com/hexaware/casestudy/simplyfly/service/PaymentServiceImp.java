@@ -10,7 +10,10 @@ import com.hexaware.casestudy.simplyfly.enums.PaymentStatus;
 import com.hexaware.casestudy.simplyfly.exception.PaymentNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.PaymentRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class PaymentServiceImp implements IPaymentService {
 	
 	@Autowired

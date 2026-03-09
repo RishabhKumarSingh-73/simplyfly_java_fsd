@@ -24,7 +24,10 @@ import com.hexaware.casestudy.simplyfly.repository.FlightScheduleRepository;
 import com.hexaware.casestudy.simplyfly.repository.RouteRepository;
 import com.hexaware.casestudy.simplyfly.repository.SeatRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class FlightScheduleServiceImp implements IFlightScheduleService {
 	
 	@Autowired

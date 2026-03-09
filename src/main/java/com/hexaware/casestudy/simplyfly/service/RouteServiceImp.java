@@ -2,10 +2,16 @@ package com.hexaware.casestudy.simplyfly.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.hexaware.casestudy.simplyfly.entity.Route;
 import com.hexaware.casestudy.simplyfly.exception.RouteNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.RouteRepository;
 
+import jakarta.transaction.Transactional;
+
+@Service
+@Transactional
 public class RouteServiceImp implements IRouteService {
 	
 	private RouteRepository repository;

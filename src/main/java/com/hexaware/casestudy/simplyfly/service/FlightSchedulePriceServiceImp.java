@@ -10,7 +10,10 @@ import com.hexaware.casestudy.simplyfly.enums.SeatClass;
 import com.hexaware.casestudy.simplyfly.exception.FlightSchedulePriceNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.FlightSchedulePriceRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class FlightSchedulePriceServiceImp implements IFlightSchedulePriceService {
 	
 	@Autowired

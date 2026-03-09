@@ -10,7 +10,10 @@ import com.hexaware.casestudy.simplyfly.enums.RefundStatus;
 import com.hexaware.casestudy.simplyfly.exception.RefundNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.RefundRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class RefundServiceImp implements IRefundService {
 	
 	@Autowired

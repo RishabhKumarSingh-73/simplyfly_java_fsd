@@ -9,7 +9,10 @@ import com.hexaware.casestudy.simplyfly.entity.User;
 import com.hexaware.casestudy.simplyfly.exception.UserNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class UserServiceImp implements IUserService {
 	
 	@Autowired

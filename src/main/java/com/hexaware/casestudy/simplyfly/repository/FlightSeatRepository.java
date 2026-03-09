@@ -11,5 +11,5 @@ public interface FlightSeatRepository extends JpaRepository<FlightSeat, Integer>
 
 	List<FlightSeat> findByFlightSchedule_Id(int flightSchedule_Id);
 	
-	List<FlightSeat> findByfindByFlightSchedule_IdAndStatus(int flightSchedule_Id,FlightSeatStatus status);
+	List<FlightSeat> findByFlightSchedule_IdAndStatus(int flightSchedule_Id,FlightSeatStatus status);
 }
