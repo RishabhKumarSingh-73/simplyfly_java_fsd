@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hexaware.casestudy.simplyfly.entity.User;
+import com.hexaware.casestudy.simplyfly.enums.Role;
+import com.hexaware.casestudy.simplyfly.exception.ServiceNotAllowedException;
 import com.hexaware.casestudy.simplyfly.exception.UserNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.UserRepository;
 
@@ -21,6 +23,8 @@ public class UserServiceImp implements IUserService {
 	@Override
 	public List<User> getAllUsers() {
 		
+		
+		
 		return repository.findAll();
 		
 	}
@@ -35,7 +39,9 @@ public class UserServiceImp implements IUserService {
 	}
 
 	@Override
-	public User addUser(User user) {
+	public User addUser(User user) throws ServiceNotAllowedException{
+		
+		if(user.getRole() == Role.ADMIN)throw new ServiceNotAllowedException("registering as admin not allowed");
 
 		return repository.save(user);
 	

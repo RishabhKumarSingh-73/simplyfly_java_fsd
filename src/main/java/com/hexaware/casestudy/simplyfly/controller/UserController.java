@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hexaware.casestudy.simplyfly.entity.User;
+import com.hexaware.casestudy.simplyfly.exception.ServiceNotAllowedException;
 import com.hexaware.casestudy.simplyfly.exception.UserNotFoundException;
 import com.hexaware.casestudy.simplyfly.service.UserServiceImp;
 
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@RequestBody User user) {
+    public User addUser(@RequestBody User user)throws ServiceNotAllowedException {
         return service.addUser(user);
     }
 
