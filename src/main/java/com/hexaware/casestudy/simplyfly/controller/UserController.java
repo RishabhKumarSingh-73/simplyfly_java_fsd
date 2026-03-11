@@ -3,8 +3,8 @@ package com.hexaware.casestudy.simplyfly.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hexaware.casestudy.simplyfly.entity.User;
+import com.hexaware.casestudy.simplyfly.dto.user.UserAddingRequestDto;
+import com.hexaware.casestudy.simplyfly.dto.user.UserResponseDto;
+import com.hexaware.casestudy.simplyfly.dto.user.UserUpdatingRequestDto;
 import com.hexaware.casestudy.simplyfly.exception.ServiceNotAllowedException;
 import com.hexaware.casestudy.simplyfly.exception.UserNotFoundException;
 import com.hexaware.casestudy.simplyfly.service.UserServiceImp;
@@ -25,32 +27,42 @@ public class UserController {
     private UserServiceImp service;
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponseDto> getAllUsers() {
         return service.getAllUsers();
     }
 
     @GetMapping("/{email}")
-    public User getUserByEmail(@PathVariable String email) throws UserNotFoundException {
+    public UserResponseDto getUserByEmail(@PathVariable String email) throws UserNotFoundException {
         return service.getUserByEmail(email);
     }
 
     @PostMapping
-    public User addUser(@RequestBody User user)throws ServiceNotAllowedException {
+    public UserResponseDto addUser(@RequestBody UserAddingRequestDto user)throws ServiceNotAllowedException {
         return service.addUser(user);
     }
 
-    @PutMapping
-    public User updateUser(@RequestBody User user) throws UserNotFoundException {
-        return service.updateUser(user);
+    @PutMapping("/{userid}")
+    public UserResponseDto updateUser(@RequestBody UserUpdatingRequestDto user,@PathVariable int userid) throws UserNotFoundException {
+        return service.updateUser(user,userid);
     }
 
-    @DeleteMapping("/email/{email}")
-    public String deleteUserByEmail(@PathVariable String email) throws UserNotFoundException {
-        return service.deleteUserByEmail(email);
+    @PatchMapping("/deactivate/email/{email}")
+    public String deactivateUserByEmail(@PathVariable String email) throws UserNotFoundException {
+        return service.deactivateUserByEmail(email);
     }
 
-    @DeleteMapping("/id/{id}")
-    public String deleteUserById(@PathVariable int id) throws UserNotFoundException {
-        return service.deleteUserById(id);
+    @PatchMapping("/deactivate/id/{id}")
+    public String deactivateUserById(@PathVariable int id) throws UserNotFoundException {
+        return service.deactivateUserById(id);
+    }
+
+    @PatchMapping("/activate/email/{email}")
+    public String activateUserByEmail(@PathVariable String email) throws UserNotFoundException {
+        return service.activateUserByEmail(email);
+    }
+
+    @PatchMapping("/activate/id/{id}")
+    public String activateUserById(@PathVariable int id) throws UserNotFoundException {
+        return service.activateUserById(id);
     }
 }
