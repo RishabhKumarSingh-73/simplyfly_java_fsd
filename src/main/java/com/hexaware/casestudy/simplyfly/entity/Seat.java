@@ -3,6 +3,7 @@ package com.hexaware.casestudy.simplyfly.entity;
 import com.hexaware.casestudy.simplyfly.enums.SeatClass;
 import com.hexaware.casestudy.simplyfly.enums.SeatPosition;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,6 +25,7 @@ public class Seat {
 	@JoinColumn(name = "aircraft_model_id",nullable = false)
 	private AircraftModel aircraftModel;
 	
+	@Column(name = "row_num")
 	private int rowNumber;
 	private char columnLetter;
 	

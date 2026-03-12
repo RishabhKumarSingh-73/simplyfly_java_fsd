@@ -8,8 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.hexaware.casestudy.simplyfly.dto.user.UserAddingRequestDto;
+import com.hexaware.casestudy.simplyfly.dto.user.UserResponseDto;
+import com.hexaware.casestudy.simplyfly.dto.user.UserUpdatingRequestDto;
 import com.hexaware.casestudy.simplyfly.entity.User;
 import com.hexaware.casestudy.simplyfly.enums.Role;
+import com.hexaware.casestudy.simplyfly.exception.ServiceNotAllowedException;
 import com.hexaware.casestudy.simplyfly.exception.UserNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.UserRepository;
 
@@ -29,7 +33,7 @@ class UserServiceImpTest {
 
         User user = new User();
         user.setUsername("testuser");
-        user.setEmail("test@email.com");
+        user.setEmail("testuser@email.com");
         user.setPasswordHash("password123");
         user.setRole(Role.CUSTOMER);
         user.setActive(true);
@@ -42,7 +46,7 @@ class UserServiceImpTest {
 
         createUserRecord();
 
-        List<User> list = service.getAllUsers();
+        List<UserResponseDto> list = service.getAllUsers();
 
         assertNotNull(list);
         assertTrue(list.size() > 0);
@@ -53,18 +57,24 @@ class UserServiceImpTest {
 
         User saved = createUserRecord();
 
-        User user = service.getUserByEmail(saved.getEmail());
+        UserResponseDto user = service.getUserByEmail(saved.getEmail());
 
         assertEquals(saved.getEmail(), user.getEmail());
     }
 
     @Test
-    void testAddUser() {
+    void testAddUser() throws ServiceNotAllowedException {
 
-        User saved = createUserRecord();
+        UserAddingRequestDto dto = new UserAddingRequestDto();
+        dto.setUsername("newuser");
+        dto.setEmail("newuser@email.com");
+        dto.setPasswordHash("password");
+        dto.setRole(Role.CUSTOMER);
 
-        assertNotNull(saved);
-        assertTrue(saved.getId() > 0);
+        UserResponseDto response = service.addUser(dto);
+
+        assertNotNull(response);
+        assertEquals("newuser@email.com", response.getEmail());
     }
 
     @Test
@@ -72,30 +82,57 @@ class UserServiceImpTest {
 
         User saved = createUserRecord();
 
-        saved.setUsername("updatedUser");
+        UserUpdatingRequestDto dto = new UserUpdatingRequestDto();
+        dto.setUsername("updateduser");
+        dto.setEmail("updated@email.com");
+        dto.setPasswordHash("updatedpass");
 
-        User updated = service.updateUser(saved);
+        UserResponseDto updated = service.updateUser(dto, saved.getId());
 
-        assertEquals("updatedUser", updated.getUsername());
+        assertEquals("updated@email.com", updated.getEmail());
     }
 
     @Test
-    void testDeleteUserByEmail() throws UserNotFoundException {
+    void testDeactivateUserByEmail() throws UserNotFoundException {
 
         User saved = createUserRecord();
 
-        String result = service.deleteUserByEmail(saved.getEmail());
+        String result = service.deactivateUserByEmail(saved.getEmail());
 
-        assertEquals("user record deleted successfully", result);
+        assertEquals("user record deactivated successfully", result);
     }
 
     @Test
-    void testDeleteUserById() throws UserNotFoundException {
+    void testDeactivateUserById() throws UserNotFoundException {
 
         User saved = createUserRecord();
 
-        String result = service.deleteUserById(saved.getId());
+        String result = service.deactivateUserById(saved.getId());
 
-        assertEquals("user record deleted successfully", result);
+        assertEquals("user record deactivated successfully", result);
+    }
+
+    @Test
+    void testActivateUserByEmail() throws UserNotFoundException {
+
+        User saved = createUserRecord();
+        saved.setActive(false);
+        repository.save(saved);
+
+        String result = service.activateUserByEmail(saved.getEmail());
+
+        assertEquals("user record activated successfully", result);
+    }
+
+    @Test
+    void testActivateUserById() throws UserNotFoundException {
+
+        User saved = createUserRecord();
+        saved.setActive(false);
+        repository.save(saved);
+
+        String result = service.activateUserById(saved.getId());
+
+        assertEquals("user record activated successfully", result);
     }
 }
