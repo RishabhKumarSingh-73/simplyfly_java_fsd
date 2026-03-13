@@ -10,8 +10,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AircraftModel {
 	
 	 @Id
@@ -25,48 +33,5 @@ public class AircraftModel {
 	 
 	 @OneToMany(mappedBy = "aircraftModel",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	 private List<Seat> seats = new ArrayList<>();
-	 
-	 public int getId() {
-		 return id;
-	 }
-	 public void setId(int id) {
-		 this.id = id;
-	 }
-	 public String getModelName() {
-		 return modelName;
-	 }
-	 public void setModelName(String modelName) {
-		 this.modelName = modelName;
-	 }
-	 public String getManufacturer() {
-		 return manufacturer;
-	 }
-	 public void setManufacturer(String manufacturer) {
-		 this.manufacturer = manufacturer;
-	 }
-	 public int getTotalRows() {
-		 return totalRows;
-	 }
-	 public void setTotalRows(int totalRows) {
-		 this.totalRows = totalRows;
-	 }
-	 public String getLayoutDescription() {
-		 return layoutDescription;
-	 }
-	 public void setLayoutDescription(String layoutDescription) {
-		 this.layoutDescription = layoutDescription;
-	 }
-	 public AircraftModel(int id, String modelName, String manufacturer, int totalRows, String layoutDescription) {
-		super();
-		this.id = id;
-		this.modelName = modelName;
-		this.manufacturer = manufacturer;
-		this.totalRows = totalRows;
-		this.layoutDescription = layoutDescription;
-	 }
-	 
-	 public AircraftModel() {
-		 
-	 }
 	 
 }

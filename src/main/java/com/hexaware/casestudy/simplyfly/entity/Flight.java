@@ -8,8 +8,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Flight {
 	
 	@Id
@@ -27,73 +35,5 @@ public class Flight {
 	private AircraftModel aircraftModel;
 	
 	private boolean isActive;
-	
-
-	
-	public Flight() {
-		super();
-	}
-
-	public Flight(int id, String flightNumber, boolean isActive) {
-		super();
-		this.id = id;
-		this.flightNumber = flightNumber;
-		this.isActive = isActive;
-	}
-	
-	
-
-	public AircraftModel getAircraftModel() {
-		return aircraftModel;
-	}
-
-	public void setAircraftModel(AircraftModel aircraftModel) {
-		this.aircraftModel = aircraftModel;
-	}
-
-	
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getFlightNumber() {
-		return flightNumber;
-	}
-
-	public void setFlightNumber(String flightNumber) {
-		this.flightNumber = flightNumber;
-	}
-
-	
-
-	public User getOwner() {
-		return owner;
-	}
-
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}
-
-	public AircraftModel getAircraftModelId() {
-		return aircraftModel;
-	}
-
-	public void setAircraftModelId(AircraftModel aircraftModel) {
-		this.aircraftModel = aircraftModel;
-	}
-
-	public boolean isActive() {
-		return isActive;
-	}
-
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
-	
 	
 }
