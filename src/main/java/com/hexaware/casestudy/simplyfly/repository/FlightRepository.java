@@ -13,4 +13,6 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
 	
 	List<Flight> findByOwner_Id(int owner_Id);
 	
+	List<Flight> findByAircraftModel_Id(int aircraftModel_Id);
+	
 }

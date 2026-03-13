@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hexaware.casestudy.simplyfly.dto.flight.FlightResponseDto;
 import com.hexaware.casestudy.simplyfly.entity.Flight;
 import com.hexaware.casestudy.simplyfly.exception.FlightNotFoundException;
+import com.hexaware.casestudy.simplyfly.mapper.FlightMapper;
 import com.hexaware.casestudy.simplyfly.repository.FlightRepository;
 
 import jakarta.transaction.Transactional;
@@ -19,46 +21,54 @@ public class FlightServiceImp implements IFlightService {
 	private FlightRepository repository;
 
 	@Override
-	public List<Flight> getAllFlights() {
+	public List<FlightResponseDto> getAllFlights() {
 		
-		return repository.findAll();
+		return repository.findAll().stream().map(entity->{
+			return FlightMapper.flightToFlightResponseDto(entity);
+		}).toList();
 		
 	}
 
 	@Override
-	public Flight getFlightById(int id) throws FlightNotFoundException{
+	public FlightResponseDto getFlightById(int id) throws FlightNotFoundException{
+		
+		Flight flight = repository.findById(id).orElseThrow(()-> new FlightNotFoundException("Flight record not found"));
 
-		return repository.findById(id).orElseThrow(()-> new FlightNotFoundException("Flight record not found"));
+		return FlightMapper.flightToFlightResponseDto(flight);
 	
 	}
 
 	@Override
-	public Flight getFlightByNumber(String flightNumber)throws FlightNotFoundException {
+	public FlightResponseDto getFlightByNumber(String flightNumber)throws FlightNotFoundException {
 
-		return repository.findByFlightNumber(flightNumber).orElseThrow(()-> new FlightNotFoundException("Flight record not found"));
+		Flight flight = repository.findByFlightNumber(flightNumber).orElseThrow(()-> new FlightNotFoundException("Flight record not found"));
+		
+		return FlightMapper.flightToFlightResponseDto(flight);
 	
 	}
 
 	@Override
-	public List<Flight> getFlightsByOwnerId(int ownerId){
+	public List<FlightResponseDto> getFlightsByOwnerId(int ownerId){
 		
-		return repository.findByOwner_Id(ownerId);
+		return repository.findByOwner_Id(ownerId).stream().map(entity->{
+			return FlightMapper.flightToFlightResponseDto(entity);
+		}).toList();
 		
 	}
 
 	@Override
-	public Flight addFlight(Flight flight) {
+	public FlightResponseDto addFlight(Flight flight) {
 		
-		return repository.save(flight);
+		return FlightMapper.flightToFlightResponseDto(repository.save(flight));
 	
 	}
 
 	@Override
-	public Flight updateFlight(Flight flight) throws FlightNotFoundException{
+	public FlightResponseDto updateFlight(Flight flight) throws FlightNotFoundException{
 
 		repository.findById(flight.getId()).orElseThrow(()-> new FlightNotFoundException("Flight record not found"));
 		
-		return repository.save(flight);
+		return FlightMapper.flightToFlightResponseDto(repository.save(flight));
 	
 	}
 

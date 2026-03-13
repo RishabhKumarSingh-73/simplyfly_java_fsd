@@ -8,20 +8,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.hexaware.casestudy.simplyfly.dto.aircraft_model.AircraftModelAddingRequestDto;
+import com.hexaware.casestudy.simplyfly.dto.aircraft_model.AircraftModelResponseDto;
 import com.hexaware.casestudy.simplyfly.entity.AircraftModel;
 import com.hexaware.casestudy.simplyfly.exception.AircraftModelNotFoundException;
-
-import jakarta.transaction.Transactional;
+import com.hexaware.casestudy.simplyfly.exception.ServiceNotAllowedException;
+import com.hexaware.casestudy.simplyfly.repository.AircraftModelRepository;
 
 @SpringBootTest
-@Transactional
 class AircraftModelServiceImpTest {
 
     @Autowired
     private AircraftModelServiceImp service;
 
-    @Test
-    void testAddAircraftModel() {
+    @Autowired
+    private AircraftModelRepository repository;
+
+    private AircraftModel createAircraftModelRecord() {
 
         AircraftModel model = new AircraftModel();
         model.setModelName("A320");
@@ -29,24 +32,15 @@ class AircraftModelServiceImpTest {
         model.setTotalRows(30);
         model.setLayoutDescription("3-3");
 
-        AircraftModel saved = service.addAircraftModel(model);
-
-        assertNotNull(saved);
-        assertTrue(saved.getId() > 0);
+        return repository.save(model);
     }
 
     @Test
     void testGetAllAircraftModels() {
 
-        AircraftModel model = new AircraftModel();
-        model.setModelName("B737");
-        model.setManufacturer("Boeing");
-        model.setTotalRows(28);
-        model.setLayoutDescription("3-3");
+        createAircraftModelRecord();
 
-        service.addAircraftModel(model);
-
-        List<AircraftModel> list = service.getAllAircraftModels();
+        List<AircraftModelResponseDto> list = service.getAllAircraftModels();
 
         assertNotNull(list);
         assertTrue(list.size() > 0);
@@ -55,63 +49,53 @@ class AircraftModelServiceImpTest {
     @Test
     void testGetAircraftModelById() throws AircraftModelNotFoundException {
 
-        AircraftModel model = new AircraftModel();
-        model.setModelName("A321");
-        model.setManufacturer("Airbus");
-        model.setTotalRows(32);
-        model.setLayoutDescription("3-3");
+        AircraftModel saved = createAircraftModelRecord();
 
-        AircraftModel saved = service.addAircraftModel(model);
+        AircraftModelResponseDto response = service.getAircraftModelById(saved.getId());
 
-        AircraftModel found = service.getAircraftModelById(saved.getId());
-
-        assertEquals(saved.getId(), found.getId());
+        assertEquals(saved.getId(), response.getId());
     }
 
     @Test
     void testGetAircraftModelByName() throws AircraftModelNotFoundException {
 
-        AircraftModel model = new AircraftModel();
-        model.setModelName("A319");
-        model.setManufacturer("Airbus");
-        model.setTotalRows(25);
-        model.setLayoutDescription("3-3");
+        AircraftModel saved = createAircraftModelRecord();
 
-        service.addAircraftModel(model);
+        AircraftModelResponseDto response = service.getAircraftModelByName(saved.getModelName());
 
-        AircraftModel found = service.getAircraftModelByName("A319");
-
-        assertEquals("A319", found.getModelName());
+        assertEquals(saved.getModelName(), response.getModelName());
     }
 
     @Test
-    void testUpdateAircraftModel() throws AircraftModelNotFoundException {
+    void testAddAircraftModel() {
 
-        AircraftModel model = new AircraftModel();
-        model.setModelName("B777");
-        model.setManufacturer("Boeing");
-        model.setTotalRows(40);
-        model.setLayoutDescription("3-4-3");
+        AircraftModelAddingRequestDto dto = new AircraftModelAddingRequestDto();
+        dto.setModelName("B737");
+        dto.setManufacturer("Boeing");
+        dto.setTotalRows(28);
+        dto.setLayoutDescription("3-3");
 
-        AircraftModel saved = service.addAircraftModel(model);
+        AircraftModelResponseDto response = service.addAircraftModel(dto);
 
-        saved.setManufacturer("Updated Boeing");
-
-        AircraftModel updated = service.updateAircraftModel(saved);
-
-        assertEquals("Updated Boeing", updated.getManufacturer());
+        assertNotNull(response);
+        assertEquals("B737", response.getModelName());
     }
 
     @Test
-    void testDeleteAircraftModelById() throws AircraftModelNotFoundException {
+    void testUpdateAircraftModelManufacturer() throws AircraftModelNotFoundException {
 
-        AircraftModel model = new AircraftModel();
-        model.setModelName("A350");
-        model.setManufacturer("Airbus");
-        model.setTotalRows(38);
-        model.setLayoutDescription("3-3-3");
+        AircraftModel saved = createAircraftModelRecord();
 
-        AircraftModel saved = service.addAircraftModel(model);
+        AircraftModelResponseDto updated =
+                service.updateAircraftModelManufacturer("UpdatedManufacturer", saved.getId());
+
+        assertEquals("UpdatedManufacturer", updated.getManufacturer());
+    }
+
+    @Test
+    void testDeleteAircraftModelById() throws AircraftModelNotFoundException, ServiceNotAllowedException {
+
+        AircraftModel saved = createAircraftModelRecord();
 
         String result = service.deleteAircraftModelById(saved.getId());
 
