@@ -39,7 +39,8 @@ public class UserController {
         return service.getUserByEmail(email);
     }
 
-  
+   
+    // @PreAuthorize("hasAnyRole('ADMIN','FLIGHT_OWNER','CUSTOMER')")
     @PostMapping
     public UserResponseDto addUser(@RequestBody UserAddingRequestDto user)throws ServiceNotAllowedException {
         return service.addUser(user);

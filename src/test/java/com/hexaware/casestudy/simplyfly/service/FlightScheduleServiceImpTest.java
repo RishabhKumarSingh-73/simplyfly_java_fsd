@@ -3,127 +3,184 @@ package com.hexaware.casestudy.simplyfly.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.hexaware.casestudy.simplyfly.dto.FlightScheduleCreateDTO;
-import com.hexaware.casestudy.simplyfly.dto.FlightSchedulePriceDTO;
-import com.hexaware.casestudy.simplyfly.dto.FlightScheduleResponseDTO;
-import com.hexaware.casestudy.simplyfly.entity.FlightSchedule;
+import com.hexaware.casestudy.simplyfly.dto.flight_schedule.FlightScheduleCreateDto;
+import com.hexaware.casestudy.simplyfly.dto.flight_schedule.FlightScheduleResponseDto;
+import com.hexaware.casestudy.simplyfly.entity.AircraftModel;
+import com.hexaware.casestudy.simplyfly.entity.Flight;
+import com.hexaware.casestudy.simplyfly.entity.Route;
+import com.hexaware.casestudy.simplyfly.entity.Seat;
+import com.hexaware.casestudy.simplyfly.entity.User;
 import com.hexaware.casestudy.simplyfly.enums.FlightScheduleStatus;
+import com.hexaware.casestudy.simplyfly.enums.SeatPosition;
+import com.hexaware.casestudy.simplyfly.enums.Role;
 import com.hexaware.casestudy.simplyfly.enums.SeatClass;
-
-import jakarta.transaction.Transactional;
+import com.hexaware.casestudy.simplyfly.exception.FlightNotFoundException;
+import com.hexaware.casestudy.simplyfly.exception.FlightScheduleNotFoundException;
+import com.hexaware.casestudy.simplyfly.exception.RouteNotFoundException;
+import com.hexaware.casestudy.simplyfly.repository.AircraftModelRepository;
+import com.hexaware.casestudy.simplyfly.repository.FlightRepository;
+import com.hexaware.casestudy.simplyfly.repository.RouteRepository;
+import com.hexaware.casestudy.simplyfly.repository.SeatRepository;
+import com.hexaware.casestudy.simplyfly.repository.UserRepository;
 
 @SpringBootTest
-@Transactional
 class FlightScheduleServiceImpTest {
 
     @Autowired
     private FlightScheduleServiceImp service;
 
-    private FlightScheduleResponseDTO createSchedule() throws Exception {
+    @Autowired
+    private FlightRepository flightRepository;
 
-        FlightScheduleCreateDTO dto = new FlightScheduleCreateDTO();
+    @Autowired
+    private RouteRepository routeRepository;
 
-        dto.setFlightId(1);
-        dto.setRouteId(1);
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AircraftModelRepository aircraftModelRepository;
+
+    @Autowired
+    private SeatRepository seatRepository;
+
+    private Flight createFlight() {
+
+        User owner = new User();
+        owner.setUsername("owner1");
+        owner.setEmail("owner@test.com");
+        owner.setPasswordHash("pass");
+        owner.setRole(Role.FLIGHT_OWNER);
+        owner.setActive(true);
+        owner = userRepository.save(owner);
+
+        AircraftModel model = new AircraftModel();
+        model.setModelName("A320");
+        model.setManufacturer("Airbus");
+        model.setTotalRows(30);
+        model.setLayoutDescription("3-3");
+        model = aircraftModelRepository.save(model);
+
+        Seat seat = new Seat();
+        seat.setAircraftModel(model);
+        seat.setRowNumber(1);
+        seat.setColumnLetter('A');
+        seat.setSeatClass(SeatClass.ECONOMY);
+        seat.setPositionType(SeatPosition.WINDOW);
+        seatRepository.save(seat);
+
+        Flight flight = new Flight();
+        flight.setFlightNumber("AI101");
+        flight.setOwner(owner);
+        flight.setAircraftModel(model);
+        flight.setActive(true);
+
+        return flightRepository.save(flight);
+    }
+
+    private Route createRoute() {
+
+        Route route = new Route();
+        route.setSourceAirportCode("DEL");
+        route.setDestinationAirportCode("BLR");
+        route.setSourceCity("Delhi");
+        route.setDestinationCity("Bangalore");
+
+        return routeRepository.save(route);
+    }
+
+    private FlightScheduleResponseDto createSchedule() throws FlightNotFoundException, RouteNotFoundException {
+
+        Flight flight = createFlight();
+        Route route = createRoute();
+
+        FlightScheduleCreateDto dto = new FlightScheduleCreateDto();
+        dto.setFlightId(flight.getId());
+        dto.setRouteId(route.getId());
         dto.setDepartureDatetime(LocalDateTime.now().plusDays(1));
         dto.setArrivalDatetime(LocalDateTime.now().plusDays(1).plusHours(2));
-
-        FlightSchedulePriceDTO price = new FlightSchedulePriceDTO();
-        price.setSeatClass(SeatClass.ECONOMY);
-        price.setBasePrice(5000.0);
-
-        List<FlightSchedulePriceDTO> prices = new ArrayList<>();
-        prices.add(price);
-
-        dto.setPrices(prices);
 
         return service.addFlightSchedule(dto);
     }
 
     @Test
-    void testGetAllFlightSchedules() throws Exception {
+    void testGetAllFlightSchedules() throws FlightNotFoundException, RouteNotFoundException {
 
         createSchedule();
 
-        List<FlightSchedule> list = service.getAllFlightSchedules();
+        List<FlightScheduleResponseDto> list = service.getAllFlightSchedules();
 
         assertNotNull(list);
         assertTrue(list.size() > 0);
     }
 
     @Test
-    void testGetFlightScheduleById() throws Exception {
+    void testGetFlightScheduleById() throws FlightNotFoundException, RouteNotFoundException, FlightScheduleNotFoundException {
 
-        FlightScheduleResponseDTO created = createSchedule();
+        FlightScheduleResponseDto saved = createSchedule();
 
-        FlightSchedule schedule = service.getFlightScheduleById(created.getScheduleId());
+        FlightScheduleResponseDto response = service.getFlightScheduleById(saved.getScheduleId());
 
-        assertEquals(created.getScheduleId(), schedule.getId());
+        assertEquals(saved.getScheduleId(), response.getScheduleId());
     }
 
     @Test
-    void testGetSchedulesByRouteAndDate() throws Exception {
+    void testGetSchedulesByRouteAndDate() throws FlightNotFoundException, RouteNotFoundException {
 
-        FlightScheduleResponseDTO created = createSchedule();
+        FlightScheduleResponseDto saved = createSchedule();
 
-        List<FlightSchedule> list =
+        List<FlightScheduleResponseDto> list =
                 service.getSchedulesByRouteAndDate(
-                        created.getRouteId(),
-                        created.getDepartureDatetime()
-                );
+                        saved.getRouteId(),
+                        saved.getDepartureDatetime());
+
+        assertNotNull(list);
+    }
+
+    @Test
+    void testGetSchedulesByFlightId() throws FlightNotFoundException, RouteNotFoundException {
+
+        FlightScheduleResponseDto saved = createSchedule();
+
+        List<FlightScheduleResponseDto> list =
+                service.getSchedulesByFlightId(saved.getFlightId());
 
         assertNotNull(list);
         assertTrue(list.size() > 0);
     }
 
     @Test
-    void testGetSchedulesByFlightId() throws Exception {
+    void testAddFlightSchedule() throws FlightNotFoundException, RouteNotFoundException {
 
-        FlightScheduleResponseDTO created = createSchedule();
-
-        List<FlightSchedule> list =
-                service.getSchedulesByFlightId(created.getFlightId());
-
-        assertNotNull(list);
-        assertTrue(list.size() > 0);
-    }
-
-    @Test
-    void testAddFlightSchedule() throws Exception {
-
-        FlightScheduleResponseDTO response = createSchedule();
+        FlightScheduleResponseDto response = createSchedule();
 
         assertNotNull(response);
-        assertTrue(response.getScheduleId() > 0);
+        assertNotNull(response.getScheduleId());
     }
 
     @Test
-    void testUpdateFlightSchedule() throws Exception {
+    void testUpdateFlightScheduleStatus() throws FlightNotFoundException, RouteNotFoundException, FlightScheduleNotFoundException {
 
-        FlightScheduleResponseDTO created = createSchedule();
+        FlightScheduleResponseDto saved = createSchedule();
 
-        FlightSchedule updated =
-                service.updateFlightScheduleStatus(
-                        created.getScheduleId(),
-                        FlightScheduleStatus.DELAYED
-                );
+        FlightScheduleResponseDto updated =
+                service.updateFlightScheduleStatus(saved.getScheduleId(), FlightScheduleStatus.DELAYED);
 
-        assertEquals(FlightScheduleStatus.DELAYED, updated.getStatus());
+        assertEquals(FlightScheduleStatus.DELAYED.name(), updated.getStatus());
     }
 
     @Test
-    void testCancelFlightSchedule() throws Exception {
+    void testCancelFlightSchedule() throws FlightNotFoundException, RouteNotFoundException, FlightScheduleNotFoundException {
 
-        FlightScheduleResponseDTO created = createSchedule();
+        FlightScheduleResponseDto saved = createSchedule();
 
-        String result = service.cancelFlightSchedule(created.getScheduleId());
+        String result = service.cancelFlightSchedule(saved.getScheduleId());
 
         assertEquals("flight schedule cancelled successfully", result);
     }

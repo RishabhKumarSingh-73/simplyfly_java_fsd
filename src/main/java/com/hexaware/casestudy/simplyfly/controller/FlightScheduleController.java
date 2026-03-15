@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hexaware.casestudy.simplyfly.dto.FlightScheduleCreateDTO;
-import com.hexaware.casestudy.simplyfly.dto.FlightScheduleResponseDTO;
-import com.hexaware.casestudy.simplyfly.entity.FlightSchedule;
+import com.hexaware.casestudy.simplyfly.dto.flight_schedule.FlightScheduleCreateDto;
+import com.hexaware.casestudy.simplyfly.dto.flight_schedule.FlightScheduleResponseDto;
 import com.hexaware.casestudy.simplyfly.enums.FlightScheduleStatus;
 import com.hexaware.casestudy.simplyfly.exception.FlightNotFoundException;
 import com.hexaware.casestudy.simplyfly.exception.FlightScheduleNotFoundException;
@@ -29,23 +28,23 @@ public class FlightScheduleController {
     private FlightScheduleServiceImp service;
 
     @GetMapping
-    public List<FlightSchedule> getAllSchedules() {
+    public List<FlightScheduleResponseDto> getAllSchedules() {
         return service.getAllFlightSchedules();
     }
 
     @GetMapping("/{id}")
-    public FlightSchedule getScheduleById(@PathVariable int id) throws FlightScheduleNotFoundException {
+    public FlightScheduleResponseDto getScheduleById(@PathVariable int id) throws FlightScheduleNotFoundException {
         return service.getFlightScheduleById(id);
     }
 
     @PostMapping
-    public FlightScheduleResponseDTO addSchedule(@RequestBody FlightScheduleCreateDTO dto)
+    public FlightScheduleResponseDto addSchedule(@RequestBody FlightScheduleCreateDto dto)
             throws FlightNotFoundException, RouteNotFoundException {
         return service.addFlightSchedule(dto);
     }
 
     @PutMapping("/{id}/{status}")
-    public FlightSchedule updateStatus(@PathVariable int id,
+    public FlightScheduleResponseDto updateStatus(@PathVariable int id,
                                        @PathVariable FlightScheduleStatus status)
             throws FlightScheduleNotFoundException {
         return service.updateFlightScheduleStatus(id, status);
