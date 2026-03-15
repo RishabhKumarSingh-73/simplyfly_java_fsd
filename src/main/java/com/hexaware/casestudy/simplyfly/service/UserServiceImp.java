@@ -51,6 +51,8 @@ public class UserServiceImp implements IUserService {
 
 		User user = UserMapper.userAddingRequestDtoToEntity(userDto);
 
+		user.setActive(true);
+
 		return UserMapper.entityToUserResponseDto(repository.save(user));
 	
 	}

@@ -8,31 +8,60 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.hexaware.casestudy.simplyfly.dto.flight.FlightAddingRequestDto;
+import com.hexaware.casestudy.simplyfly.dto.flight.FlightResponseDto;
 import com.hexaware.casestudy.simplyfly.entity.AircraftModel;
 import com.hexaware.casestudy.simplyfly.entity.Flight;
 import com.hexaware.casestudy.simplyfly.entity.User;
+import com.hexaware.casestudy.simplyfly.enums.Role;
+import com.hexaware.casestudy.simplyfly.exception.AircraftModelNotFoundException;
 import com.hexaware.casestudy.simplyfly.exception.FlightNotFoundException;
+import com.hexaware.casestudy.simplyfly.exception.ServiceNotAllowedException;
+import com.hexaware.casestudy.simplyfly.exception.UserNotFoundException;
+import com.hexaware.casestudy.simplyfly.repository.AircraftModelRepository;
 import com.hexaware.casestudy.simplyfly.repository.FlightRepository;
-
-import jakarta.transaction.Transactional;
+import com.hexaware.casestudy.simplyfly.repository.UserRepository;
 
 @SpringBootTest
-@Transactional
 class FlightServiceImpTest {
 
     @Autowired
     private FlightServiceImp service;
 
     @Autowired
-    private FlightRepository repository;
+    private FlightRepository flightRepository;
 
-    private Flight createFlightRecord() {
+    @Autowired
+    private UserRepository userRepository;
 
-        User owner = new User();
-        owner.setId(1);
+    @Autowired
+    private AircraftModelRepository aircraftModelRepository;
 
+    private User createUser() {
+        User user = new User();
+        user.setUsername("owner1");
+        user.setEmail("owner@email.com");
+        user.setPasswordHash("pass");
+        user.setRole(Role.FLIGHT_OWNER);
+        user.setActive(true);
+
+        return userRepository.save(user);
+    }
+
+    private AircraftModel createAircraftModel() {
         AircraftModel model = new AircraftModel();
-        model.setId(1);
+        model.setModelName("A320");
+        model.setManufacturer("Airbus");
+        model.setTotalRows(30);
+        model.setLayoutDescription("3-3");
+
+        return aircraftModelRepository.save(model);
+    }
+
+    private Flight createFlight() {
+
+        User owner = createUser();
+        AircraftModel model = createAircraftModel();
 
         Flight flight = new Flight();
         flight.setFlightNumber("AI101");
@@ -40,15 +69,15 @@ class FlightServiceImpTest {
         flight.setAircraftModel(model);
         flight.setActive(true);
 
-        return repository.save(flight);
+        return flightRepository.save(flight);
     }
 
     @Test
     void testGetAllFlights() {
 
-        createFlightRecord();
+        createFlight();
 
-        List<Flight> list = service.getAllFlights();
+        List<FlightResponseDto> list = service.getAllFlights();
 
         assertNotNull(list);
         assertTrue(list.size() > 0);
@@ -57,59 +86,77 @@ class FlightServiceImpTest {
     @Test
     void testGetFlightById() throws FlightNotFoundException {
 
-        Flight saved = createFlightRecord();
+        Flight saved = createFlight();
 
-        Flight flight = service.getFlightById(saved.getId());
+        FlightResponseDto response = service.getFlightById(saved.getId());
 
-        assertEquals(saved.getId(), flight.getId());
+        assertEquals(saved.getId(), response.getId());
     }
 
     @Test
     void testGetFlightByNumber() throws FlightNotFoundException {
 
-        Flight saved = createFlightRecord();
+        Flight saved = createFlight();
 
-        Flight flight = service.getFlightByNumber(saved.getFlightNumber());
+        FlightResponseDto response = service.getFlightByNumber(saved.getFlightNumber());
 
-        assertEquals(saved.getFlightNumber(), flight.getFlightNumber());
+        assertEquals(saved.getFlightNumber(), response.getFlightNumber());
     }
 
     @Test
     void testGetFlightsByOwnerId() {
 
-        createFlightRecord();
+        Flight saved = createFlight();
 
-        List<Flight> list = service.getFlightsByOwnerId(1);
+        List<FlightResponseDto> list = service.getFlightsByOwnerId(saved.getOwner().getId());
 
         assertNotNull(list);
         assertTrue(list.size() > 0);
     }
 
     @Test
-    void testAddFlight() {
+    void testAddFlight() throws UserNotFoundException, AircraftModelNotFoundException {
 
-        Flight saved = createFlightRecord();
+        User owner = createUser();
+        AircraftModel model = createAircraftModel();
 
-        assertNotNull(saved);
-        assertTrue(saved.getId() > 0);
+        FlightAddingRequestDto dto = new FlightAddingRequestDto();
+        dto.setFlightNumber("AI202");
+        dto.setOwnerId(owner.getId());
+        dto.setAircraftModelId(model.getId());
+
+        FlightResponseDto response = service.addFlight(dto);
+
+        assertNotNull(response);
+        assertEquals("AI202", response.getFlightNumber());
     }
 
     @Test
-    void testUpdateFlight() throws FlightNotFoundException {
+    void testDeactivateFlight() throws FlightNotFoundException {
 
-        Flight saved = createFlightRecord();
+        Flight saved = createFlight();
 
-        saved.setFlightNumber("AI202");
+        FlightResponseDto response = service.deactivateFlight(saved.getId());
 
-        Flight updated = service.updateFlight(saved);
-
-        assertEquals("AI202", updated.getFlightNumber());
+        assertFalse(response.isActive());
     }
 
     @Test
-    void testDeleteFlightById() throws FlightNotFoundException {
+    void testActivateFlight() throws FlightNotFoundException {
 
-        Flight saved = createFlightRecord();
+        Flight saved = createFlight();
+        saved.setActive(false);
+        flightRepository.save(saved);
+
+        FlightResponseDto response = service.activateFlight(saved.getId());
+
+        assertTrue(response.isActive());
+    }
+
+    @Test
+    void testDeleteFlightById() throws FlightNotFoundException, ServiceNotAllowedException {
+
+        Flight saved = createFlight();
 
         String result = service.deleteFlightById(saved.getId());
 
