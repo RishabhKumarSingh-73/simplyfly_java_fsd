@@ -3,6 +3,7 @@ package com.hexaware.casestudy.simplyfly.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.hexaware.casestudy.simplyfly.dto.user.UserAddingRequestDto;
@@ -23,6 +24,9 @@ public class UserServiceImp implements IUserService {
 	
 	@Autowired
 	private UserRepository repository;
+	
+	@Autowired
+	private PasswordEncoder encoder;
 
 	// will take care access in authorization
 
@@ -50,6 +54,10 @@ public class UserServiceImp implements IUserService {
 		if(userDto.getRole() == Role.ADMIN)throw new ServiceNotAllowedException("registering as admin not allowed");
 
 		User user = UserMapper.userAddingRequestDtoToEntity(userDto);
+		
+		String passwordHash = encoder.encode(user.getPasswordHash());
+		
+		user.setPasswordHash(passwordHash);
 
 		user.setActive(true);
 

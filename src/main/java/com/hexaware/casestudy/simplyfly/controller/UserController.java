@@ -41,7 +41,7 @@ public class UserController {
 
    
     // @PreAuthorize("hasAnyRole('ADMIN','FLIGHT_OWNER','CUSTOMER')")
-    @PostMapping
+    @PostMapping("/register")
     public UserResponseDto addUser(@RequestBody UserAddingRequestDto user)throws ServiceNotAllowedException {
         return service.addUser(user);
     }
