@@ -8,6 +8,7 @@ import com.hexaware.casestudy.simplyfly.dto.user.LoginDto;
 import com.hexaware.casestudy.simplyfly.dto.user.LoginResponseDto;
 import com.hexaware.casestudy.simplyfly.entity.User;
 import com.hexaware.casestudy.simplyfly.repository.UserRepository;
+import com.hexaware.casestudy.simplyfly.security.JwtUtil;
 
 @Service
 public class AuthServiceImp implements IAuthService {

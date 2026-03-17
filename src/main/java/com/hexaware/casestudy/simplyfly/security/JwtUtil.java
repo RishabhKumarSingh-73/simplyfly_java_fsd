@@ -1,4 +1,4 @@
-package com.hexaware.casestudy.simplyfly.service;
+package com.hexaware.casestudy.simplyfly.security;
 
 import java.util.Date;
 
@@ -10,7 +10,8 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtil {
 
-    private String SECRET = "simplyfly-secret-key";
+    private final String SECRET =
+            "simplyfly-secret-key-simplyfly-secret-key";
 
     public String generateToken(String email, String role) {
 
@@ -18,7 +19,8 @@ public class JwtUtil {
                 .setSubject(email)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000))
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + 86400000))
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
                 .compact();
     }
@@ -31,5 +33,20 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public boolean isTokenValid(String token) {
+
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(SECRET.getBytes())
+                    .build()
+                    .parseClaimsJws(token);
+
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
