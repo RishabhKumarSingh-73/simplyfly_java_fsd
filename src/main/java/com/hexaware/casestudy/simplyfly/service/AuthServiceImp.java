@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.hexaware.casestudy.simplyfly.dto.user.LoginDto;
 import com.hexaware.casestudy.simplyfly.dto.user.LoginResponseDto;
 import com.hexaware.casestudy.simplyfly.entity.User;
+import com.hexaware.casestudy.simplyfly.exception.InvalidPasswordException;
+import com.hexaware.casestudy.simplyfly.exception.UserNotFoundException;
 import com.hexaware.casestudy.simplyfly.repository.UserRepository;
 import com.hexaware.casestudy.simplyfly.security.JwtUtil;
 
@@ -23,13 +25,13 @@ public class AuthServiceImp implements IAuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public LoginResponseDto login(LoginDto dto) {
+    public LoginResponseDto login(LoginDto dto)throws UserNotFoundException,InvalidPasswordException {
 
         User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPasswordHash())) {
-            throw new RuntimeException("Invalid password");
+            throw new InvalidPasswordException("Invalid password");
         }
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hexaware.casestudy.simplyfly.dto.flight_schedule_price.FlightSchedulePriceAddingRequestDto;
 import com.hexaware.casestudy.simplyfly.entity.FlightSchedulePrice;
 import com.hexaware.casestudy.simplyfly.enums.SeatClass;
 import com.hexaware.casestudy.simplyfly.exception.FlightSchedulePriceNotFoundException;
@@ -34,30 +35,12 @@ public class FlightSchedulePriceServiceImp implements IFlightSchedulePriceServic
 	}
 
 	@Override
-	public FlightSchedulePrice addPrice(FlightSchedulePrice price) {
+	public FlightSchedulePrice addPrice(FlightSchedulePriceAddingRequestDto priceDto) {
 
-		return repository.save(price);
+		return repository.save(priceDto);
 		
 	}
 
-	@Override
-	public FlightSchedulePrice updatePrice(FlightSchedulePrice price) throws FlightSchedulePriceNotFoundException{
-		
-		repository.findById(price.getId()).orElseThrow(()-> new FlightSchedulePriceNotFoundException("flight schedule price record not found"));
-		
-		return repository.save(price);
-		
-	}
-
-	@Override
-	public String deletePriceById(int id) throws FlightSchedulePriceNotFoundException{
-		
-		FlightSchedulePrice price = repository.findById(id).orElseThrow(()-> new FlightSchedulePriceNotFoundException("flight schedule price record not found"));
-		
-		repository.delete(price);
-		
-		return "flight schedule price deleted successfully";
-		
-	}
+	
 
 }

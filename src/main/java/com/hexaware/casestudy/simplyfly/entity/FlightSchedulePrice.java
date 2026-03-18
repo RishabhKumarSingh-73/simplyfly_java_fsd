@@ -1,6 +1,7 @@
 package com.hexaware.casestudy.simplyfly.entity;
 
 
+
 import com.hexaware.casestudy.simplyfly.enums.SeatClass;
 
 import jakarta.persistence.Entity;
@@ -12,8 +13,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FlightSchedulePrice {
 	
 	@Id
@@ -28,40 +37,5 @@ public class FlightSchedulePrice {
 	private SeatClass seatClass;
 	
 	private double basePrice;
-	public FlightSchedulePrice() {
-		super();
-	}
-	public FlightSchedulePrice(int id,SeatClass seatClass, double basePrice) {
-		super();
-		this.id = id;
-		this.seatClass = seatClass;
-		this.basePrice = basePrice;
-	}
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	public FlightSchedule getFlightSchedule() {
-		return flightSchedule;
-	}
-	public void setFlightSchedule(FlightSchedule flightSchedule) {
-		this.flightSchedule = flightSchedule;
-	}
-	public SeatClass getSeatClass() {
-		return seatClass;
-	}
-	public void setSeatClass(SeatClass seatClass) {
-		this.seatClass = seatClass;
-	}
-	public double getBasePrice() {
-		return basePrice;
-	}
-	public void setBasePrice(double basePrice) {
-		this.basePrice = basePrice;
-	}
-	
 	
 }

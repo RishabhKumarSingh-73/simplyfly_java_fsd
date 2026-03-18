@@ -17,6 +17,7 @@ import com.hexaware.casestudy.simplyfly.exception.FlightNotFoundException;
 import com.hexaware.casestudy.simplyfly.exception.FlightScheduleNotFoundException;
 import com.hexaware.casestudy.simplyfly.exception.FlightSchedulePriceNotFoundException;
 import com.hexaware.casestudy.simplyfly.exception.FlightSeatNotFoundException;
+import com.hexaware.casestudy.simplyfly.exception.InvalidPasswordException;
 import com.hexaware.casestudy.simplyfly.exception.PaymentNotFoundException;
 import com.hexaware.casestudy.simplyfly.exception.RefundNotFoundException;
 import com.hexaware.casestudy.simplyfly.exception.RouteNotFoundException;
@@ -107,6 +108,12 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<String> handleUsernameNotFoundException(ServiceNotAllowedException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    
+    
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<String> handleInvalidPasswordException(InvalidPasswordException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

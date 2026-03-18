@@ -36,17 +36,5 @@ public class FlightSchedulePriceController {
         return service.addPrice(price);
     }
 
-    @PutMapping
-    public FlightSchedulePrice updatePrice(@RequestBody FlightSchedulePrice price)
-            throws FlightSchedulePriceNotFoundException {
-
-        return service.updatePrice(price);
-    }
-
-    @DeleteMapping("/{id}")
-    public String deletePrice(@PathVariable int id)
-            throws FlightSchedulePriceNotFoundException {
-
-        return service.deletePriceById(id);
-    }
+    
 }

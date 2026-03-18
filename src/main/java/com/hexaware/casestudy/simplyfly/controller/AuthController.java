@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hexaware.casestudy.simplyfly.dto.user.LoginDto;
 import com.hexaware.casestudy.simplyfly.dto.user.LoginResponseDto;
+import com.hexaware.casestudy.simplyfly.exception.InvalidPasswordException;
+import com.hexaware.casestudy.simplyfly.exception.UserNotFoundException;
 import com.hexaware.casestudy.simplyfly.service.AuthServiceImp;
 
 @RestController
@@ -19,7 +21,7 @@ public class AuthController {
     private AuthServiceImp authService;
 
     @PostMapping("/login")
-    public LoginResponseDto login(@RequestBody LoginDto dto) {
+    public LoginResponseDto login(@RequestBody LoginDto dto)throws UserNotFoundException,InvalidPasswordException {
         return authService.login(dto);
     }
 
