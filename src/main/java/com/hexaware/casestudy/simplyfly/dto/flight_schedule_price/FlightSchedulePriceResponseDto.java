@@ -1,6 +1,5 @@
 package com.hexaware.casestudy.simplyfly.dto.flight_schedule_price;
 
-import com.hexaware.casestudy.simplyfly.entity.FlightSchedule;
 import com.hexaware.casestudy.simplyfly.enums.SeatClass;
 
 import lombok.AllArgsConstructor;

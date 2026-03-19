@@ -10,6 +10,7 @@ import com.hexaware.casestudy.simplyfly.dto.flight.FlightResponseDto;
 import com.hexaware.casestudy.simplyfly.entity.AircraftModel;
 import com.hexaware.casestudy.simplyfly.entity.Flight;
 import com.hexaware.casestudy.simplyfly.entity.User;
+import com.hexaware.casestudy.simplyfly.enums.Role;
 import com.hexaware.casestudy.simplyfly.exception.AircraftModelNotFoundException;
 import com.hexaware.casestudy.simplyfly.exception.FlightNotFoundException;
 import com.hexaware.casestudy.simplyfly.exception.ServiceNotAllowedException;
@@ -19,6 +20,7 @@ import com.hexaware.casestudy.simplyfly.repository.AircraftModelRepository;
 import com.hexaware.casestudy.simplyfly.repository.FlightRepository;
 import com.hexaware.casestudy.simplyfly.repository.FlightScheduleRepository;
 import com.hexaware.casestudy.simplyfly.repository.UserRepository;
+import com.hexaware.casestudy.simplyfly.security.CustomUserDetailsService;
 
 import jakarta.transaction.Transactional;
 
@@ -37,6 +39,9 @@ public class FlightServiceImp implements IFlightService {
 
 	@Autowired
 	private FlightScheduleRepository flightScheduleRepository;
+	
+	@Autowired
+	private CustomUserDetailsService customUserDetailsService;
 
 
 	@Override
@@ -89,9 +94,15 @@ public class FlightServiceImp implements IFlightService {
 	}
 
 	@Override
-	public FlightResponseDto deactivateFlight(int id) throws FlightNotFoundException{
-
+	public FlightResponseDto deactivateFlight(int id) throws FlightNotFoundException,ServiceNotAllowedException{
+		
+		User currentUser = customUserDetailsService.getCurrentUserId();
+		
+		if(currentUser.getRole() == Role.CUSTOMER) throw new ServiceNotAllowedException("User cant change flight data");
+		
 		Flight flight = repository.findById(id).orElseThrow(()-> new FlightNotFoundException("Flight record not found"));
+		
+		if(currentUser.getRole() == Role.FLIGHT_OWNER && flight.getOwner().getId() != currentUser.getId())throw new ServiceNotAllowedException("You cant change other owners flight data");
 
 		flight.setActive(false);
 		
@@ -100,9 +111,16 @@ public class FlightServiceImp implements IFlightService {
 	}
 
 	@Override
-	public FlightResponseDto activateFlight(int id) throws FlightNotFoundException{
+	public FlightResponseDto activateFlight(int id) throws FlightNotFoundException,ServiceNotAllowedException{
 
+		User currentUser = customUserDetailsService.getCurrentUserId();
+		
+		if(currentUser.getRole() == Role.CUSTOMER) throw new ServiceNotAllowedException("User cant change flight data");
+		
 		Flight flight = repository.findById(id).orElseThrow(()-> new FlightNotFoundException("Flight record not found"));
+		
+		if(currentUser.getRole() == Role.FLIGHT_OWNER && flight.getOwner().getId() != currentUser.getId())throw new ServiceNotAllowedException("You cant change other owners flight data");
+
 
 		flight.setActive(true);
 		
@@ -113,14 +131,23 @@ public class FlightServiceImp implements IFlightService {
 	@Override
 	public String deleteFlightById(int id) throws FlightNotFoundException,ServiceNotAllowedException{
 
+		User currentUser = customUserDetailsService.getCurrentUserId();
+		
+		if(currentUser.getRole() == Role.CUSTOMER) throw new ServiceNotAllowedException("User cant change flight data");
+		
 		Flight flight = repository.findById(id).orElseThrow(()-> new FlightNotFoundException("Flight record not found"));
+		
+		if(currentUser.getRole() == Role.FLIGHT_OWNER && flight.getOwner().getId() != currentUser.getId())throw new ServiceNotAllowedException("You cant change other owners flight data");
 
-		if(flightScheduleRepository.findByFlight_Id(id) == null)throw new ServiceNotAllowedException("Cant delete flight with existing schedules");
+
+		if(flightScheduleRepository.findByFlight_Id(id) != null)throw new ServiceNotAllowedException("Cant delete flight with existing schedules");
 		
 		repository.delete(flight);
 		
 		return "record deleted successfully.";
 		
 	}
+	
+	
 
 }

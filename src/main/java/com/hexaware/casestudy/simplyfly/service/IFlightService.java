@@ -15,8 +15,8 @@ public interface IFlightService {
 	FlightResponseDto getFlightById(int id)throws FlightNotFoundException;
 	FlightResponseDto getFlightByNumber(String flightNumber)throws FlightNotFoundException;
     List<FlightResponseDto> getFlightsByOwnerId(int ownerId);
-    FlightResponseDto addFlight(FlightAddingRequestDto flightDto)throws UserNotFoundException,AircraftModelNotFoundException;
-    FlightResponseDto deactivateFlight(int id)throws FlightNotFoundException;
-    FlightResponseDto activateFlight(int id)throws FlightNotFoundException;
-    String deleteFlightById(int id)throws FlightNotFoundException,ServiceNotAllowedException;
+    FlightResponseDto addFlight(FlightAddingRequestDto flightDto)throws UserNotFoundException,AircraftModelNotFoundException,ServiceNotAllowedException;
+    FlightResponseDto deactivateFlight(int id)throws FlightNotFoundException,ServiceNotAllowedException;
+    FlightResponseDto activateFlight(int id)throws FlightNotFoundException,ServiceNotAllowedException;
+    String deleteFlightById(int id)throws FlightNotFoundException,ServiceNotAllowedException,ServiceNotAllowedException;
 }

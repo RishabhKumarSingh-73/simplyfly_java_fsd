@@ -11,8 +11,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FlightSeat {
 	
 	@Id
@@ -29,50 +37,5 @@ public class FlightSeat {
 	
 	@Enumerated(EnumType.STRING)
 	private FlightSeatStatus status;
-	
-	public FlightSeat() {
-		super();
-	}
-
-	public FlightSeat(int id, FlightSeatStatus status) {
-		super();
-		this.id = id;
-		this.status = status;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	
-
-	public FlightSchedule getFlightSchedule() {
-		return flightSchedule;
-	}
-
-	public void setFlightSchedule(FlightSchedule flightSchedule) {
-		this.flightSchedule = flightSchedule;
-	}
-
-	public Seat getSeat() {
-		return seat;
-	}
-
-	public void setSeat(Seat seat) {
-		this.seat = seat;
-	}
-
-	public FlightSeatStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(FlightSeatStatus status) {
-		this.status = status;
-	}
-	
 	
 }

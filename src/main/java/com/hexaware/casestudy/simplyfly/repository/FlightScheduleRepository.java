@@ -12,5 +12,6 @@ public interface FlightScheduleRepository extends JpaRepository<FlightSchedule, 
 
 	List<FlightSchedule> findByRoute_IdAndDepartureDateTime(int route_Id, LocalDateTime departureDateTime);
 	List<FlightSchedule> findByFlight_Id(int flight_Id);
+	List<FlightSchedule> findByRoute_Id(int route_Id);
 	
 }
